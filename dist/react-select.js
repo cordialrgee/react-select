@@ -1953,6 +1953,10 @@ var Async = function (_Component) {
 				});
 
 				if (!pagination || pagination && (cache[inputValue].page >= page || cache[inputValue].hasReachedLastPage)) {
+					this.setState({
+						isLoading: false,
+						isLoadingPage: false
+					});
 					return;
 				}
 			}

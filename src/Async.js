@@ -104,6 +104,10 @@ export default class Async extends Component {
 				!pagination ||
 				(pagination && (cache[inputValue].page >= page || cache[inputValue].hasReachedLastPage))
 			) {
+				this.setState({
+          isLoading: false,
+          isLoadingPage: false
+				});
 				return;
 			}
 		}
