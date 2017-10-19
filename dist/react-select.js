@@ -1905,6 +1905,7 @@ var Async = function (_Component) {
 
 		_this.onInputChange = _this.onInputChange.bind(_this);
 		_this.onMenuScrollToBottom = _this.onMenuScrollToBottom.bind(_this);
+		_this.onChange = _this.onChange.bind(_this);
 		return _this;
 	}
 
@@ -2034,8 +2035,11 @@ var Async = function (_Component) {
 				onInputChange(transformedInputValue);
 			}
 
+			var oldInputValue = this.state.inputValue;
 			this.setState({ inputValue: inputValue });
-			this.loadOptions(transformedInputValue);
+			if (inputValue != oldInputValue) {
+				this.loadOptions(transformedInputValue);
+			}
 
 			// Return the original input value to avoid modifying the user's view of the input while typing.
 			return inputValue;
@@ -2073,6 +2077,18 @@ var Async = function (_Component) {
 			this.loadOptions(inputValue, this.state.page + 1);
 		}
 	}, {
+		key: 'onChange',
+		value: function onChange(value) {
+			this.props.onChange(value);
+
+			if (this.props.pagination) {
+				var remainingOptions = this.state.options.length - value.length;
+				if (remainingOptions < 4) {
+					this.onMenuScrollToBottom(this.state.inputValue);
+				}
+			}
+		}
+	}, {
 		key: 'render',
 		value: function render() {
 			var _this3 = this;
@@ -2081,7 +2097,6 @@ var Async = function (_Component) {
 			    children = _props4.children,
 			    loadingPlaceholder = _props4.loadingPlaceholder,
 			    multi = _props4.multi,
-			    onChange = _props4.onChange,
 			    placeholder = _props4.placeholder;
 			var _state2 = this.state,
 			    isLoading = _state2.isLoading,
@@ -2101,7 +2116,8 @@ var Async = function (_Component) {
 			return children(_extends({}, this.props, props, {
 				isLoading: isLoading,
 				onInputChange: this.onInputChange,
-				onMenuScrollToBottom: this.onMenuScrollToBottom
+				onMenuScrollToBottom: this.onMenuScrollToBottom,
+				onChange: this.onChange
 			}));
 		}
 	}]);

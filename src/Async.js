@@ -63,6 +63,7 @@ export default class Async extends Component {
 
 		this.onInputChange = this.onInputChange.bind(this);
 		this.onMenuScrollToBottom = this.onMenuScrollToBottom.bind(this);
+		this.onChange = this.onChange.bind(this);
 	}
 
 	componentDidMount () {
@@ -182,8 +183,11 @@ export default class Async extends Component {
 			onInputChange(transformedInputValue);
 		}
 
+		let oldInputValue = this.state.inputValue;
 		this.setState({ inputValue });
-		this.loadOptions(transformedInputValue);
+		if (inputValue != oldInputValue) {
+      this.loadOptions(transformedInputValue);
+		}
 
 		// Return the original input value to avoid modifying the user's view of the input while typing.
 		return inputValue;
@@ -212,8 +216,19 @@ export default class Async extends Component {
 		this.loadOptions(inputValue, this.state.page + 1);
 	}
 
+	onChange(value) {
+		this.props.onChange(value);
+
+		if (this.props.pagination) {
+      let remainingOptions = this.state.options.length - value.length;
+      if (remainingOptions < 4) {
+        this.onMenuScrollToBottom(this.state.inputValue);
+      }
+    }
+	}
+
 	render () {
-		const { children, loadingPlaceholder, multi, onChange, placeholder, value } = this.props;
+		const { children, loadingPlaceholder, multi, placeholder, value } = this.props;
 		const { isLoading, isLoadingPage, options } = this.state;
 
 		const props = {
@@ -229,6 +244,7 @@ export default class Async extends Component {
 			isLoading,
 			onInputChange: this.onInputChange,
 			onMenuScrollToBottom: this.onMenuScrollToBottom,
+			onChange: this.onChange
 		});
 	}
 }
