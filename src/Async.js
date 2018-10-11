@@ -219,7 +219,9 @@ export default class Async extends Component {
 	onChange(value) {
 		this.props.onChange(value);
 
-		if (this.props.pagination) {
+		//Load more if most options have been exhausted in a multi-select
+		const isMultiselect = Array.isArray(value);
+		if (this.props.pagination && isMultiselect) {
       let remainingOptions = this.state.options.length - value.length;
       if (remainingOptions < 4) {
         this.onMenuScrollToBottom(this.state.inputValue);
